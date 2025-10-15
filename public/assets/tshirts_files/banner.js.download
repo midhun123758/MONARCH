@@ -1,0 +1,113 @@
+
+    var ua = navigator.userAgent.toLowerCase();
+    var isWebView = ua.includes("wv");
+    var isApple = (ua.includes("ios") || ua.includes("iphone")) && ua.includes("chrome");
+    var isAndroid = ua.includes("android") && ua.includes("chrome");
+
+    var hasLoaded = false;
+
+    function setCookie(name, value, expireInDays) {
+        var d = new Date();
+        d.setTime(d.getTime() + expireInDays * 24 * 60 * 60 * 1000);
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = name + "=" + value + ";" + expires + ";path=/";
+    }
+
+    function shouldLoadDeeplinkBanner() {
+        var cookie = document.cookie;
+        if (cookie) {
+            return (
+            this.hasLoaded == false &&
+            !cookie.includes("hideDeeplinkBanner")
+            );
+        }
+        if (this.isAndroid || this.isApple) {
+            return this.hasLoaded == false;
+        }
+        return false;
+    }
+
+    function generateDeeplinkBanner() {
+        this.hasLoaded = true;
+        if (this.isAndroid || this.isApple) {
+            document.head.insertAdjacentHTML(
+            "afterbegin",
+            '<link rel="stylesheet" href="http://api.vennapps.com/deeplink-banner/style.css"></link>'
+            );
+            document.body.insertAdjacentHTML(
+            "afterbegin",
+            `<div class="venn-deeplink-banner" id="venn-deeplink-banner">
+                <div class="venn-left-content" id="venn-left-content">
+                    <div class="venn-left-content-div">
+                        <div class="venn-left-content-logo-container">
+                            <img class="venn-app-icon" src="https://play-lh.googleusercontent.com/RWsAzIm5rAvUa6izZJA48UHW_QSEtkTUdOgXKCrC0slKFbgG1VJ0UifDJgJKmFJQOPVL=w480-h960", id="venn-app-icon">
+                        </div>
+                        <div class="venn-left-content-text">
+                            <h3 id="venn-app-title">ZANEROBE</h3>
+                            <br>
+                            <p id="venn-app-subtitle">Download our app</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="venn-right-content" id="venn-right-content">
+                    <div class="venn-right-content-div">
+                        ${isAndroid ? `<img class="venn-play-store" src="https://scripts.vennapps.com/deeplink-banner/images/android.png" width="100" title="Play Store" id="venn-store-banner">` : ``}
+                        ${isApple ? `<img src="https://scripts.vennapps.com/deeplink-banner/images/ios.png" width="100" title="App Store" id="venn-store-banner">` : ``}
+                    </div>
+                </div>
+                <div class="venn-close-button" id="venn-close-button">X</div>
+            </div>`
+            );
+        }
+    }
+
+    window.onload = function () {
+        loadDeeplinkBannerContent();
+    };
+
+    function handleBannerClick(target) {
+        if (target !== "venn-deeplink-banner" && target !== "venn-app-icon" && target !== "venn-app-title" && target !== "venn-app-subtitle" && target !== "venn-store-banner") {
+          return
+        }
+
+        var targetUrl;
+
+        if (this.isAndroid) {
+            targetUrl = "https://play.google.com/store/apps/details?id=co.tapcart.app.id_g8001lr7Ud";
+        } else if (this.isApple) {
+            targetUrl = "https://apps.apple.com/gb/app/zanerobe/id6447220192";
+        }
+        
+        window.open(targetUrl, "_self");
+    }
+
+    function loadDeeplinkBannerContent() {
+        try {
+            if (this.shouldLoadDeeplinkBanner()) {
+                this.generateDeeplinkBanner();
+                var banner = document.getElementById("venn-deeplink-banner")
+                banner.addEventListener("click", (event) => {
+                    handleBannerClick(event.target.id)
+                })
+                var closeBtn = document.getElementById("venn-close-button")
+                closeBtn.addEventListener("click", (event) => {
+                    hideDeeplinkBanner(event.target.id)
+                })
+            }
+        } catch (error) {
+            console.error(
+            `There was an error obtaining deeplink content:`,
+            JSON.stringify(error)
+            );
+        }
+    }
+
+    function hideDeeplinkBanner(target) {
+        if (target !== "venn-close-button") {
+          return
+        }
+
+        var x = document.getElementById("venn-deeplink-banner");
+        x.style.display = "none";
+        setCookie("hideDeeplinkBanner", "true", 1);
+    }

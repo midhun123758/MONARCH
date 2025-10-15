@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@font-face {
+  font-family: 'P22Zaner';
+  src: url('/src/assets/fonts/P22Zaner.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
