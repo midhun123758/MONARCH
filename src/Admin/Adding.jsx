@@ -34,7 +34,7 @@ export default function Adding() {
         price: Number(product.price),
       });
       alert("Product added successfully!");
-      navigate("/admin/products"); // Go back to Manage Products
+      navigate("/admin/products"); 
     } catch (err) {
       console.error("Failed to add product:", err);
       alert("Failed to add product.");

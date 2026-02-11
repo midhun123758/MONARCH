@@ -1,8 +1,9 @@
 import React, { useContext } from "react";
 import { CartContext } from "../../context/CartContext";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../context/AuthContext";
 export default function Profile() {
-  const { user } = useContext(CartContext); // user data from context
+  const { user } = useContext(AuthContext); // user data from context
   const nav=useNavigate()
   if (!user) {
     return (
@@ -21,7 +22,7 @@ export default function Profile() {
       <div className="flex flex-col gap-4 item-center justify-center mb-6" >
         <div>
           <h3 className="text-lg font-semibold text-black">Name</h3>
-          <p className="text-gray-600">{user.name}</p>
+          <p className="text-gray-600">{user.username}</p>
         </div>
 
         <div>
@@ -30,12 +31,12 @@ export default function Profile() {
         </div>
         <div>
           <h3 className="text-lg font-semibold text-black">cartcount</h3>
-          <p className="text-gray-600">{user.cart.length}</p>
+          {/* <p className="text-gray-600">{user.cart.length}</p> */}
         </div>
 
         <div>
           <h3 className="text-lg font-semibold text-black">WishlistCount</h3>
-          <p className="text-gray-600">{user.wishlist.length}</p>
+          {/* <p className="text-gray-600">{user.wishlist.length}</p> */}
         </div>
        <div className="flex justify-center items-center hover:text-gray-300 ">
         

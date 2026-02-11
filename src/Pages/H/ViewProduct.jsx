@@ -101,7 +101,7 @@ window.scrollTo({ top: 0, behavior: "smooth" });
   const product = location.state?.product;
  images.push(product.img,product.img2,product.img3,product.img4)
  console.log(images)
-  // ✅ Use product instead of dress
+
   const inWishlist = Array.isArray(wishlist)
     ? wishlist.some((item) => item.id === product.id)
     : false;
@@ -122,7 +122,7 @@ window.scrollTo({ top: 0, behavior: "smooth" });
     
   }
    useEffect(() => {
-      fetch("http://localhost:5000/Allproducts")
+      fetch("http://127.0.0.1:8000/api/products/ctg_view/${productId}/")
         .then((res) => res.json())
         .then((data) => setAdditional(data.filter(d=>d.category==product.category)))
         .catch((err) => console.error("Error fetching dresses:", err));
@@ -167,7 +167,7 @@ window.scrollTo({ top: 0, behavior: "smooth" });
           <button
             onClick={() =>
               navigate("/buy", {
-                state: { product }, // pass product to Checkout page
+                state: { product }, 
               })
             }
             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-800"
@@ -179,7 +179,7 @@ window.scrollTo({ top: 0, behavior: "smooth" });
           <button
             onClick={(e) => {
               e.stopPropagation();
-              toggleWishlist(product); // Corrected from 'dress' to 'product'
+              toggleWishlist(product); 
             }}
             className={`px-3 py-2 rounded text-sm transition-all ${
               inWishlist ? "bg-pink-500 text-white" : "bg-white border border-gray-300"

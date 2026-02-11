@@ -5,15 +5,17 @@ import { Menu, Search, User } from "lucide-react";
 import SearchPanel from "../Pages/H/SearchPanel";
 import Menu1 from "../Pages/H/Menu1";
 import {CartContext} from "../context/CartContext";
+import { CarTaxiFront } from "lucide-react";
+import { AuthContext } from "../context/AuthContext";
 function Nav() {
   // cart
   const { cartCount } = useContext(CartContext);
   // wishlist
   const { wishlist } = useContext(WishlistContext); // we only need wishlist array
-  const wishlistCount = wishlist?.length || 0;
+  const wishlistCount = wishlist.filter(item => item.id).length;;
 
   const [mobileOpen, setMobileOpen] = useState(false);
-  const {user}=useContext(CartContext)
+  const {user}=useContext(AuthContext)
   const userId = user?.id || user
   const [isSearchOpen, setSearchOpen] = useState(false);
   const [isMenu, setMenu] = useState(false);
@@ -24,7 +26,7 @@ function Nav() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
+      setScrolled(window.scrollY > 700);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -47,7 +49,7 @@ function Nav() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative flex justify-between h-16 items-center">
             {/* Left side: Menu Icon */}
-            <div className="flex items-center">
+            <div className=" flex items-center">
               <button
                 onClick={() => setMenu(true)}
                 className={`relative transition ${
@@ -145,33 +147,11 @@ function Nav() {
       {isSearchOpen && <SearchPanel onClose={() => setSearchOpen(false)} />}
          {isMenu && <Menu1 onClose={() => setMenu(false)} />}
               {/* Mobile menu toggle */}
-              <button
-                onClick={() => setMobileOpen(!mobileOpen)}
-                className="inline-flex items-center justify-center p-2 rounded-md md:hidden"
-                aria-label="Toggle menu"
-              >
-                {mobileOpen ? (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  </svg>
-                )}
-              </button>
+          
+       {mobileOpen&&<CarTaxiFront size={50}/>}
+
+
+
 
               <div className="hidden sm:flex items-center gap-2 sm:gap-4">
                 <Link to="/user" className={`text-sm font-medium hidden sm:block transition ${
@@ -196,38 +176,6 @@ function Nav() {
           </div>
         </div>
 
-        {/* Mobile menu */}
-        {mobileOpen && (
-          <div className="md:hidden border-t border-white/20 bg-black/50">
-            <div className="px-4 pt-4 pb-4 space-y-4">
-              <Link to="/" className="block text-sm font-medium">
-                Home
-              </Link>
-              <Link to="/Shirts" className="block text-sm font-medium">
-                Shirts
-              </Link>
-              <Link to="/Pants" className="block text-sm font-medium">
-                Pants
-              </Link>
-              <Link to="/tshirts" className="block text-sm font-medium">
-                T-shirts
-              </Link>
-              <Link to="/wishlist" className="block text-sm font-medium">
-                Wishlist
-              </Link>
-              <Link to="/cart" className="block text-sm font-medium">
-                Cart
-              </Link>
-              <Link to="/profile" className="block text-sm font-medium">
-                profile
-              </Link>
-              <Link to="/user" className="block text-sm font-medium sm:hidden">
-                {userId ? "Logout" : "Login / Signup"}
-              </Link>
-            </div>
-           
-          </div>
-        )}
       </nav>
     </div>
   );

@@ -4,7 +4,7 @@ import { BrowserRouter, Routes, Route, Outlet, Navigate } from "react-router-dom
 // Context Providers
 import { CartProvider } from "./context/CartContext.jsx";
 import { WishlistProvider } from "./context/WishContext";
-
+import { AuthProvider } from "./context/AuthContext.jsx";
 // Shared components
 import Nav from "./Navbar/Nav";
 import Footer from "./Footer/Footer";
@@ -41,9 +41,7 @@ import ItemEdit from "./Admin/ItemEdit";
 import Edituser from "./Admin/Edituser";
 import { AdminProtectedRoute, UserProtectedRoute } from "./context/ProtectedRoutes";
 
-// ======================
-// USER LAYOUT
-// ======================
+
 const UserLayout = () => (
   <>
     <Nav />
@@ -53,13 +51,10 @@ const UserLayout = () => (
     <Footer />
   </>
 );
-
-// ======================
-// MAIN APP COMPONENT
-// ======================
 function App() {
   return (
     <BrowserRouter>
+    <AuthProvider>
       <CartProvider>
         <WishlistProvider>
           <Routes>
@@ -109,6 +104,7 @@ function App() {
           </Routes>
         </WishlistProvider>
       </CartProvider>
+      </AuthProvider>
     </BrowserRouter>
   );
 }

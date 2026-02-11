@@ -1,172 +1,119 @@
-
-
-
-
-
-import axios from "axios";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import  {ToastContext}  from "../context/ToastContext";
+import axios from "axios";
+import { AuthContext } from "./AuthContext";
 
-let CartContext=createContext()
+export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
+  const { user } = useContext(AuthContext);
+  const [cart, setCart] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const token = localStorage.getItem("token");
 
-  // toast=useContext()
-  const [user, setUser] = useState(null); // full user object
-  const [cart, setCart] = useState([]); // current cart items
-
-  // load user object from localStorage
-  useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (!userData) return;
+  // 🔹 Load cart
+  const loadCart = async () => {
+    if (!token) return;
 
     try {
-      const parsedUser = JSON.parse(userData);
-      // If it's just an ID string, fetch the full user data
-      if (typeof parsedUser === 'string') {
-        const fetchUser = async () => {
-          try {
-            const { data } = await axios.get(`http://localhost:5000/users/${parsedUser}`);
-            setUser(data); 
-            const serverCart = Array.isArray(data.cart) ? data.cart.map((item) => ({ ...item, qty: item.qty ?? 1 })) : [];
-            setCart(serverCart);
-          } catch (err) {
-            console.error(err);
-            localStorage.removeItem("user");
-          }
-        };
-        fetchUser();
-      } else {
-        // If it's already a full user object
-        setUser(parsedUser);
-        const serverCart = Array.isArray(parsedUser.cart) ? parsedUser.cart.map((item) => ({ ...item, qty: item.qty ?? 1 })) : [];
-        setCart(serverCart);
-      }
-    } catch (error) {
-      console.error("Error parsing user data:", error);
-      localStorage.removeItem("user");
-    }
-  }, []);
+      const res = await axios.get(
+        "http://127.0.0.1:8000/api/cart/view/",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-  // helper to persist cart to server and update local state
-  const persistCart = async (nextCart) => {
-    if (!user) return;
-    
-    try {
-      await axios.patch(`http://localhost:5000/users/${user.id}`, {
-        cart: nextCart,
-      });
-      setCart(nextCart);
-      const updatedUser = { ...user, cart: nextCart };
-      setUser(updatedUser);
-      localStorage.setItem("user", JSON.stringify(updatedUser));
+      setCart(res.data.cart_items);
+      setTotalPrice(res.data.total_price);
     } catch (err) {
-      console.error(err);
+      console.error("Load cart error:", err.response?.data || err.message);
     }
   };
 
-
-  const addToCart = async (product) => {
-    if (!user) {
-      alert("Please log in first!", "error");
-      return;
-    }
-
-   
-    if (!product.stock || product.stock <= 0) {
-      alert("This product is out of stock.", "error");
-      return;
-    }
-
-    const idx = cart.findIndex((item) => item.id === product.id);
-    let updatedCart;
-
-    if (idx >= 0) {
-      const existingItem = cart[idx];
-      if (existingItem.qty >= existingItem.stock) {
-        alert("Cannot add more than available stock.", "error");
-        return;
-      }
-      updatedCart = cart.map((item) =>
-        item.id === product.id ? { ...item, qty: (item.qty ?? 1) + 1 } : item
-      );
+  useEffect(() => {
+    if (user) {
+      loadCart();
     } else {
-      updatedCart = [{ ...product, qty: 1 }, ...cart];
-    }
-
-    await persistCart(updatedCart);
-    alert("Added to cart", "success");
-  };
-
-  // remove from cart
-  const removeFromCart = async (productId) => {
-    const updatedCart = cart.filter((item) => item.id !== productId);
-    await persistCart(updatedCart);
-  };
-
-  const updateQuantity = async (productId, newQty) => {
-    if (!user) return;
-
-    const itemToUpdate = cart.find((item) => item.id === productId);
-    if (itemToUpdate && newQty > itemToUpdate.stock) {
-      alert("Cannot add more than available stock.", "error");
-      return;
-    }
-
-    let updatedCart;
-    if (newQty <= 0) {
-      updatedCart = cart.filter((item) => item.id !== productId);
-    } else {
-      updatedCart = cart.map((item) => 
-        item.id === productId ? { ...item, qty: newQty } : item
-      );
-    }
-    await persistCart(updatedCart);
-  };
-
-  const incrementQuantity = (productId) => {
-    const item = cart.find((i) => i.id === productId);
-    if (!item) return;
-    if (item.qty >= item.stock) {
-      alert("Out of stock", "error");
-      return;
-    }
-    updateQuantity(productId, (item.qty ?? 1) + 1);
-  };
-
-  const decrementQuantity = (productId) => {
-    const item = cart.find((i) => i.id === productId);
-    if (!item) return;
-    const next = (item.qty ?? 1) - 1;
-    updateQuantity(productId, next);
-  };
-
- 
-  const updateUser = (userData) => {
-    if (userData) {
-      setUser(userData);
-      localStorage.setItem("user", JSON.stringify(userData));
-      const serverCart = Array.isArray(userData.cart) ? userData.cart.map((item) => ({ ...item, qty: item.qty ?? 1 })) : [];
-      setCart(serverCart);
-    } else {
-      setUser(null);
       setCart([]);
-      localStorage.removeItem("user");
+      setTotalPrice(0);
+    }
+  }, [user]);
+
+  // 🔹 ADD TO CART
+  const addToCart = async (productId, quantity = 1) => {
+    try {
+      await axios.post(
+        "http://127.0.0.1:8000/api/cart/add/",
+        { product_id: productId, quantity },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      loadCart();
+    } catch (err) {
+      console.error("Add to cart error:", err.response?.data || err.message);
+    }
+  };
+
+  // 🔹 UPDATE QUANTITY (CORE FIX)
+  const updateQuantity = async (itemId, newQuantity) => {
+    try {
+      await axios.put(
+        `http://127.0.0.1:8000/api/cart/update/${itemId}/`,
+        { quantity: newQuantity },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      loadCart();
+    } catch (err) {
+      console.error("Update cart error:", err.response?.data || err.message);
+    }
+  };
+
+  // 🔹 REMOVE ITEM
+  const removeFromCart = async (itemId) => {
+    try {
+      await axios.delete(
+        `http://127.0.0.1:8000/api/cart/delete/${itemId}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      loadCart();
+    } catch (err) {
+      console.error("Remove cart error:", err.response?.data || err.message);
+    }
+  };
+
+  // 🔹 INCREMENT / DECREMENT (ONLY CALCULATE HERE)
+  const incrementQuantity = (itemId, currentQty, stock) => {
+    if (currentQty < stock) {
+      updateQuantity(itemId, currentQty + 1);
+    }
+  };
+
+  const decrementQuantity = (itemId, currentQty) => {
+    if (currentQty > 1) {
+      updateQuantity(itemId, currentQty - 1);
     }
   };
 
   return (
     <CartContext.Provider
       value={{
-        user,
-        setUser: updateUser, // Use the updated function
         cart,
-        setCart,
-        cartCount: cart.reduce((sum, item) => sum + (item.qty ?? 1), 0),
+        totalPrice,
+        cartCount: cart.reduce((sum, item) => sum + item.quantity, 0),
         addToCart,
         removeFromCart,
-        updateQuantity,
         incrementQuantity,
         decrementQuantity,
       }}
@@ -175,4 +122,3 @@ export const CartProvider = ({ children }) => {
     </CartContext.Provider>
   );
 };
-export  {CartContext};

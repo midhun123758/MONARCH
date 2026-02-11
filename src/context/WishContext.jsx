@@ -1,99 +1,75 @@
-// src/context/WishContext.js
 import axios from "axios";
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const WishlistContext = createContext();
 
 export const WishlistProvider = ({ children }) => {
   const navigate = useNavigate();
-
-  // Load user from localStorage
-  const storedUser = JSON.parse(localStorage.getItem("user"));
-  const [user, setUser] = useState(storedUser || null);
-  const [wishlist, setWishlist] = useState(storedUser?.wishlist || []);
-
-  // Fetch user data from backend once
-  useEffect(() => {
-    if (!storedUser) return;
-
-    const fetchUser = async () => {
-      try {
-        const res = await axios.get(`http://localhost:5000/users/${storedUser.id}`);
-        setUser(res.data);
-        setWishlist(res.data.wishlist || []);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  // Toggle wishlist item
-  const toggleWishlist = async (product) => {
-            const res = await axios.get(`http://localhost:5000/users/${storedUser.id}`);
-        setUser(res.data);
-
-
-    if (!user) {
-      alert("Please log in first!");
-      navigate("/login");
-      return;
-    }
-
-    const exists = wishlist.find((item) => item.id === product.id);
-    let updatedWishlist;
-
-    if (exists) {
-      // remove product
-      updatedWishlist = wishlist.filter((item) => item.id !== product.id);
-    } else {
-      // add product
-      updatedWishlist = [product, ...wishlist];
-    }
-
-    try {
-      await axios.patch(`http://localhost:5000/users/${user.id}`, {
-        wishlist: updatedWishlist,
-      });
-
-      setWishlist(updatedWishlist);
-      setUser({ ...user, wishlist: updatedWishlist });
-      localStorage.setItem("user", JSON.stringify({ ...user, wishlist: updatedWishlist }));
-    } catch (err) {
-      console.error(err);
-    }
+  const [wishlist, setWishlist] = useState([]);
+console.log("helloo",wishlist)
+  const getHeaders = () => {
+    const token = localStorage.getItem("token");
+    return token ? { Authorization: `Bearer ${token}` } : null;
   };
 
-  // Remove product from wishlist
-  const removeFromWishlist = async (productId) => {
-    if (!user) return;
-
-    const updatedWishlist = wishlist.filter((item) => item.id !== productId);
+  const fetchWishlist = useCallback(async () => {
+    const headers = getHeaders();
+    if (!headers) return;
 
     try {
-      await axios.patch(`http://localhost:5000/users/${user.id}`, {
-        wishlist: updatedWishlist,
-      });
-
-      setWishlist(updatedWishlist);
-      setUser({ ...user, wishlist: updatedWishlist });
-      localStorage.setItem("user", JSON.stringify({ ...user, wishlist: updatedWishlist }));
+      const res = await axios.get("http://127.0.0.1:8000/api/wishlist/wishlist_View/", { headers });
+      setWishlist(res.data.wishlist_items);
     } catch (err) {
-      console.error(err);
+      console.error("Fetch error:", err.response?.data);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchWishlist();
+  }, [fetchWishlist]);
+
+ // WishlistContext.js
+const addToWishlist = async (productId) => {
+  const headers = getHeaders();
+  if (!headers) return navigate("/login");
+
+  try {
+    const res = await axios.post(
+      "http://127.0.0.1:8000/api/wishlist/wishlist_add/",
+      { product_id: productId },
+      { headers }
+    );
+
+    setWishlist((prev) => {
+      // Check if this product is already in our React state
+      const isAlreadyInWishlist = prev.some(item => item.product === productId);
+
+      if (isAlreadyInWishlist) {
+        // If it exists, remove it from the list
+        return prev.filter(item => item.product !== productId);
+      } else {
+        // If it doesn't exist, add the new item sent by Django
+        return [...prev, res.data];
+      }
+    });
+  } catch (err) {
+    console.error("Wishlist sync error:", err);
+  }
+};
+
+  const removeFromWishlist = async (itemId) => {
+    const headers = getHeaders();
+    try {
+      await axios.delete(`http://127.0.0.1:8000/api/wishlist/delete/${itemId}/`, { headers });
+      setWishlist((prev) => prev.filter((item) => item.id !== itemId));
+    } catch (err) {
+      console.error("Delete error:", err.response?.data);
     }
   };
 
   return (
-    <WishlistContext.Provider
-      value={{
-        user,
-        wishlist,
-        toggleWishlist,
-        removeFromWishlist,
-      }}
-    >
+    <WishlistContext.Provider value={{ wishlist, addToWishlist, removeFromWishlist }}>
       {children}
     </WishlistContext.Provider>
   );

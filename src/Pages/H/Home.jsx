@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
-import { CartContext } from '../../context/CartContext';
+// import { CartContext } from '../../context/CartContext';
+
 const quotes = [
  "MONARCH isn't just fashion — it's the art of ruling your style.",
 "Every thread tells a story of elegance and confidence.",
@@ -9,9 +10,11 @@ const quotes = [
  "Crafted for those who dare to stand above the ordinary.",
 ];
 import Modal from './Modal';
+import { AuthContext } from '../../context/AuthContext';
 
 export default function Home() {
-  const { user } = useContext(CartContext);
+
+  const { user } = useContext(AuthContext);
   const [showModal, setShowModal] = useState(false);
   const [time,setTime]=useState(1000)
   const images = [
@@ -31,18 +34,14 @@ export default function Home() {
   ];
 
   useEffect(() => {
-    if (user) {
-      return;
-    }
-
+     const userData = localStorage.getItem("token");
+    if (userData) return;
     const timer = setTimeout(() => {
-      setShowModal(true); // show modal after 3 seconds
+      setShowModal(true); 
     },time);
-     if(showModal===true){
-     setTime(2000)
-     }
+
    
-    return () => clearTimeout(timer); // cleanup
+    return () => clearTimeout(timer); 
    
   
 },[]);
@@ -69,6 +68,9 @@ export default function Home() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+
+  
  
   return (
     <div className="text-gray-1000">
@@ -102,13 +104,13 @@ export default function Home() {
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 py-8 md:py-12 px-4 md:px-5 bg-gray-100">
         <div className="relative w-full h-64 sm:h-80 md:h-96 lg:h-[135vh] overflow-hidden group">
           <img 
-            src="/assets/pic1.jpg"
+            src="/assets/add1.jpg"
             alt="Tech Lifestyle Banner"
             className="relative w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-transparent flex flex-col items-center justify-center text-center px-4 space-y-2 sm:space-y-3 md:space-y-6">
             <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-extrabold tracking-tight text-white drop-shadow-[0_4px_8px_rgba(0,0,0,0.4)] font-[Poppins]">
-              Elevate Your Style.<br className="hidden sm:block" /> Empower Your Code.
+              Dress Like Royalty<br className="hidden sm:block" />Live with Purpose.
             </h1>
             <p className="max-w-2xl text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl text-white/80 font-light font-[Poppins] px-2">
               Discover premium designs and modern solutions crafted for creators like you.
@@ -118,7 +120,7 @@ export default function Home() {
 
         <div className="relative w-full h-64 sm:h-80 md:h-96 lg:h-[135vh] overflow-hidden group">
           <img
-            src="/assets/pic2.jpg"
+            src="/assets/add2.jpg"
             alt="Tech Lifestyle Banner"
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
@@ -211,17 +213,10 @@ export default function Home() {
                         className="w-full h-[75vh] object-cover cursor-pointer"
                       />
                       <div className="absolute bottom-4 left-4 right-4">
-                        <button 
-                          className="w-full bg-white text-black py-2.5 rounded-lg text-sm font-semibold hover:bg-gray-100 shadow-md" 
-                          onClick={() => navigate("/product", { state: { product: item } })}
-                        >
-                          View Product
-                        </button>
+                    
                       </div>
                       {/* Item indicator */}
-                      <div className="absolute top-4 right-4 bg-black/50 text-white text-xs px-3 py-1 rounded-full">
-                        {index + 1} / {items.length}
-                      </div>
+                     
                     </div>
                     <div className="text-center px-2">
                       <h3 className="font-semibold text-gray-900 text-base mb-1">
@@ -238,9 +233,7 @@ export default function Home() {
           </div>
           
           {/* Scroll indicator */}
-          <div className="text-center mt-4 text-gray-500 text-xs">
-            ← Swipe to browse →
-          </div>
+        
         </div>
 
         {/* Desktop View - Side by Side */}

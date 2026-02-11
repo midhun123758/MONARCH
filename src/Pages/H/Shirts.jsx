@@ -4,7 +4,7 @@ import { CartContext } from "../../context/CartContext";
 import { WishlistContext } from "../../context/WishContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-
+import axios from "axios";
 export default function DressCollection() {
   const [dresses, setDresses] = useState([]);
   const [selected, setSelected] = useState(null); 
@@ -12,15 +12,21 @@ export default function DressCollection() {
   const { addToCart } = useContext(CartContext);
  const nav=useNavigate()
  window.scrollTo({ top: 0, behavior: "smooth" });
-  useEffect(() => {
-    fetch("http://localhost:5000/Allproducts")
-      .then((res) => res.json())
-      .then((data) => setDresses(data.filter(d=>d.category=="Shirtss")))
+ useEffect(() => {
+      axios 
+      .get("http://127.0.0.1:8000/api/products/")
+      .then((res) => {
+      const filtered = res.data.filter(
+        (d) => Number(d.category) === 2
+      );
+     setDresses(filtered)
+    })
+     
       .catch((err) => console.error("Error fetching dresses:", err));
-      console.log(dresses);
-      
+     
+     
   }, []);
-
+ console.log('shirts',dresses)
   return (
   
 
@@ -76,7 +82,7 @@ const inWishlist = Array.isArray(wishlist)
       <div className="mt-4 flex flex-wrap gap-2">
         <button
           onClick={() => {
-            addToCart(dress);
+            addToCart(dress.id);
             alert(`${dress.name} added to cart!`);
           }}
           className="px-3 bg-white py-1 text-black text-sm hover:bg-blue-600/90 font-bold rounded"

@@ -55,7 +55,7 @@ export default function VideoBackground() {
           onLoadedData={handleVideoLoad}
           onError={() => console.error('Video failed to load')}
         >
-          {/* Fallback image if video fails to load */}
+        
           <source src="/assets/Myvideo.mp4" type="video/mp4" />
           <img 
             src="/assets/place.jpg" 
@@ -64,17 +64,17 @@ export default function VideoBackground() {
           />
         </video>
 
-        {/* Performance optimized overlay */}
+
         <div className="absolute inset-0 bg-black/30" />
 
-        {/* Content */}
+     
         <div className="relative z-10 flex items-center justify-center h-full">
           <h1 className="font-cinzel text-white uppercase text-4xl sm:text-6xl md:text-8xl tracking-[0.2em] md:tracking-[0.3em] drop-shadow-[0_4px_6px_rgba(0,0,0,0.6)] px-4 text-center">
             MONARCH'
           </h1>
         </div>
 
-        {/* Loading indicator */}
+     
         {!isVideoLoaded && (
           <div className="absolute inset-0 flex items-center justify-center bg-black">
             <div className="text-white text-lg">Loading...</div>
@@ -82,9 +82,8 @@ export default function VideoBackground() {
         )}
       </div>
 
-      {/* Image Comparison Section */}
       <div className="flex flex-col md:flex-row">
-        {/* Left Fixed Image */}
+     
         <div className="md:w-1/2 w-full h-64 md:h-screen bg-gray-100 overflow-hidden">
           <img
             src="/assets/p1.jpg"
@@ -94,9 +93,9 @@ export default function VideoBackground() {
           />
         </div>
 
-        {/* Right Transitioning Image */}
+      
         <div className="md:w-1/2 w-full h-64 md:h-screen bg-black overflow-hidden relative">
-          {/* Preload all images in the background */}
+       
           {images.map((src, index) => (
             <img
               key={src}
@@ -109,14 +108,14 @@ export default function VideoBackground() {
             />
           ))}
           
-          {/* Optional caption */}
+       
           <div className="absolute bottom-4 left-4 text-white text-sm bg-black/50 px-3 py-1 rounded backdrop-blur-sm">
             Look {current + 1}
           </div>
         </div>
       </div>
 
-      {/* Footer */}
+   
    
     </div>
   );

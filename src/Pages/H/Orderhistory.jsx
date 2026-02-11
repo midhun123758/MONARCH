@@ -2,11 +2,12 @@ import React, { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../context/CartContext"; // Adjust path as needed
+import { AuthContext } from "../../context/AuthContext";
 
 export default function OrderHistory() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { user } = useContext(CartContext); // Get user from context
+  const { user } = useContext(AuthContext); // Get user from context
   const navigate = useNavigate();
 
   useEffect(() => {

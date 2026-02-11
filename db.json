@@ -7,30 +7,7 @@
       "role": "admin",
       "password": "5000",
       "cart": [],
-      "wishlist": [
-        {
-          "id": "4",
-          "name": "Cropped Slub Flow Tee",
-          "price": 1350,
-          "img": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Portfolio-Flow-Tee-Forest-0.jpg?v=1754281666&width=1000",
-          "img2": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Portfolio-Flow-Tee-Forest-0-7.jpg?v=1754281666&width=1000",
-          "img3": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Portfolio-Flow-Tee-Forest-0-6.jpg?v=1747350024&width=1000",
-          "img4": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Portfolio-Flow-Tee-Forest-0-13.jpg?v=1747350024&width=1000",
-          "category": "Tshirt",
-          "stock": 10
-        },
-        {
-          "id": "3",
-          "name": "Cropped Slub Flow Tee",
-          "price": 1350,
-          "img": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Pasta-Kings-Flow-Crop-Tee-Forest-0-1.jpg?v=1754351123&width=1000",
-          "img2": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Pasta-Kings-Flow-Crop-Tee-Forest-0-12.jpg?v=1754351124&width=1000",
-          "img3": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Pasta-Kings-Flow-Crop-Tee-Forest-0-16.jpg?v=1754351124&width=1000",
-          "img4": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Pasta-Kings-Flow-Crop-Tee-Forest-0-18.jpg?v=1754351126&width=1000",
-          "category": "Tshirt",
-          "stock": 9
-        }
-      ],
+      "wishlist": [],
       "orders": [
         "b596",
         "7aa5",
@@ -55,8 +32,94 @@
       "password": "2004",
       "role": "user",
       "status": "active",
-      "cart": [],
-      "wishlist": [],
+      "cart": [
+        {
+          "id": "15",
+          "name": "Printed Shirt",
+          "price": 2500,
+          "img2": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Diamond-Bowling-Knit-Shirt-Vintage-White-0-20.jpg?v=1733203505&width=1000",
+          "img": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Diamond-Bowling-Knit-Shirt-Vintage-White-0-17-2.jpg?v=1733203505&width=1000",
+          "img3": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Diamond-Bowling-Knit-Shirt-Vintage-White-0-27.jpg?v=1733203505&width=1000",
+          "img4": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Diamond-Bowling-Knit-Shirt-Vintage-White-0-24.jpg?v=1733203505&width=1000",
+          "category": "Shirtss",
+          "stock": 10,
+          "qty": 2
+        },
+        {
+          "id": "21",
+          "name": "Bowling SS Shirt White/Black",
+          "price": 3200,
+          "img": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Stitched-Plaid-Shirt-Vintage-White-Black-0_dd0471ff-cc12-48d7-9c65-a83ebfa47212.jpg?v=1754541723&width=1000",
+          "img2": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Stitched-Plaid-Shirt-Vintage-White-Black-0-10_36f82002-2813-4628-a2a1-aac8b99e665c.jpg?v=1754541725&width=1000",
+          "img3": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Stitched-Plaid-Shirt-Vintage-White-Black-0-13_7b37de69-5a0f-47e4-bf56-47d074aaecaa.jpg?v=1754541724&width=1000",
+          "img4": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Stitched-Plaid-Shirt-Vintage-White-Black-0-12_e5169b60-76e6-47f2-9e8d-348fd310534f.jpg?v=1754541726&width=1000",
+          "category": "Shirtss",
+          "stock": 10,
+          "description": "Signature Blanket stitch patch pocket with ZR emblem embroidery",
+          "qty": 2
+        },
+        {
+          "id": "2",
+          "det": "",
+          "name": "Cropped Slub Flow Tee",
+          "price": 1350,
+          "img": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-NY-Flow-Tee-Grey-Marle-0.jpg?v=1754351112&width=1000",
+          "img2": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-NY-Flow-Tee-Grey-Marle-0-15.jpg?v=1754351112&width=1000",
+          "img3": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-NY-Flow-Tee-Grey-Marle-0-11.jpg?v=1754351114&width=1000",
+          "img4": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-NY-Flow-Tee-Grey-Marle-0-12.jpg?v=1754351115&width=1000",
+          "category": "Tshirt",
+          "stock": 1,
+          "qty": 1
+        }
+      ],
+      "wishlist": [
+        {
+          "id": "5",
+          "name": "Cropped Slub Flow Tee",
+          "price": 1350,
+          "img": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Heritage-Mesh-Flow-Tee-Cobalt-Blue-0-1.jpg?v=1754351116&width=1000",
+          "img2": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Heritage-Mesh-Flow-Tee-Cobalt-Blue-0-11.jpg?v=1754351116&width=1000",
+          "img3": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Heritage-Mesh-Flow-Tee-Cobalt-Blue-0-17.jpg?v=1754365134&width=1000",
+          "img4": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Heritage-Mesh-Flow-Tee-Cobalt-Blue-0-18.jpg?v=1754365134&width=1000",
+          "category": "Tshirt",
+          "stock": 9
+        },
+        {
+          "id": "26",
+          "name": "pant4",
+          "price": 2900,
+          "img": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Legacy-Work-Pant-Indigo-0-1-2.jpg?v=1733203509&width=1000",
+          "img2": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Legacy-Work-Pant-Indigo-0-4.jpg?v=1733203509&width=1000",
+          "img3": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Legacy-Work-Pant-Indigo-0-14.jpg?v=1733203509&width=1000",
+          "img4": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Legacy-Work-Pant-Indigo-0-16.jpg?v=1733203509&width=1000",
+          "category": "pants",
+          "stock": 6,
+          "description": "Classic denim styling with 'X' stitch signature on back pocket"
+        },
+        {
+          "id": "25",
+          "name": "pant3",
+          "price": 520,
+          "img": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Carpenter-Pant-Beige-0-2.jpg?v=1723684986&width=1000",
+          "img2": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Carpenter-Pant-Beige-0-4-2.jpg?v=1723684986&width=1000",
+          "img3": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Carpenter-Pant-Beige-0-2.jpg?v=1723684986&width=1000",
+          "img4": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Carpenter-Pant-Beige-0-4-2.jpg?v=1723684986&width=1000",
+          "category": "pants",
+          "stock": 10
+        },
+        {
+          "id": "24",
+          "name": "pant2",
+          "price": 4000,
+          "img": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Herringbone-Flow-Pant-Black-0-7.jpg?v=1754541720&width=1000",
+          "img2": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Herringbone-Flow-Pant-Black-0-5.jpg?v=1754541721&width=1000",
+          "img3": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Herringbone-Flow-Pant-Black-0-15.jpg?v=1754541721&width=1000",
+          "img4": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Herringbone-Flow-Pant-Black-0-20.jpg?v=1754541724&width=1000",
+          "category": "pants",
+          "stock": 9,
+          "description": "63% Polyester 33% Rayon 4% Elastane herringbone suiting"
+        }
+      ],
       "orders": [
         "ym44",
         "jj47"
@@ -92,6 +155,17 @@
       "name": "gokul",
       "email": "gokul123gmail.com",
       "password": "8000",
+      "role": "user",
+      "status": "active",
+      "cart": [],
+      "wishlist": [],
+      "orders": []
+    },
+    {
+      "id": "2041",
+      "name": "midhun",
+      "email": "midhunchandran23@gmail.com",
+      "password": "5555",
       "role": "user",
       "status": "active",
       "cart": [],
@@ -332,19 +406,19 @@
       "img4": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Pesche-Flow-Tee-Black-0.jpg?v=1754351115&width=1000",
       "category": "Tshirt",
       "description": "new imported ",
-      "stock": "25"
+      "stock": 22
     },
     {
       "id": "2",
       "det": "",
-      "name": "Cropped Slub Flow Tee",
-      "price": 1350,
+      "name": "Cropped Slub Flow Tees",
+      "price": "1338",
       "img": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-NY-Flow-Tee-Grey-Marle-0.jpg?v=1754351112&width=1000",
       "img2": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-NY-Flow-Tee-Grey-Marle-0-15.jpg?v=1754351112&width=1000",
       "img3": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-NY-Flow-Tee-Grey-Marle-0-11.jpg?v=1754351114&width=1000",
       "img4": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-NY-Flow-Tee-Grey-Marle-0-12.jpg?v=1754351115&width=1000",
       "category": "Tshirt",
-      "stock": 1
+      "stock": "6"
     },
     {
       "id": "3",
@@ -687,40 +761,6 @@
       "img4": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Design-House-SS-Shirt-Forest-White-0-10.jpg?v=1738648935&width=1000",
       "description": "",
       "stock": "18"
-    },
-    {
-      "id": "57c6",
-      "name": "new",
-      "category": "Shirtss",
-      "price": 1250,
-      "img": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Pesche-Flow-Tee-Black-0-4.jpg?v=1754351111&width=1000",
-      "img2": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Design-House-SS-Shirt-Forest-White-0-10.jpg?v=1738648935&width=1000",
-      "description": "",
-      "stock": "50"
-    },
-    {
-      "id": "4195",
-      "name": "iyviygfv",
-      "category": "Tshirt",
-      "price": 5220,
-      "img": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Pesche-Flow-Tee-Black-0-4.jpg?v=1754351111&width=1000",
-      "img2": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Naturalist-Terrain-Parachute-Pant-Real-Camo-0-7.jpg?v=1747105861&width=500",
-      "img3": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Pesche-Flow-Tee-Black-0-1.jpg?v=1754351114&width=1000",
-      "img4": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Portfolio-Flow-Tee-Forest-0-13.jpg?v=1747350024&width=1000",
-      "description": "",
-      "stock": "5"
-    },
-    {
-      "id": "c005",
-      "name": "new",
-      "category": "Tshirt",
-      "price": 345,
-      "img": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Pesche-Flow-Tee-Black-0-4.jpg?v=1754351111&width=1000",
-      "img2": "https://zanerobe.com.au/cdn/shop/files/ZANEROBE-Design-House-Denim-SS-Shirt-LT-Blue-0-2.jpg?v=1747105825&width=1000",
-      "img3": "",
-      "img4": "",
-      "description": "",
-      "stock": "2"
     }
   ],
   "orders": [
@@ -774,14 +814,14 @@
           "price": 1280,
           "quantity": 10,
           "subtotal": 12800,
-          "status": "shipped"
+          "status": "delivered"
         }
       ],
       "name": "admin",
       "email": "admin@gmail.com",
       "total": 12800,
       "address": "noo adddres",
-      "status": "shipped",
+      "status": "delivered",
       "createdAt": "2025-10-11T06:17:37.429Z"
     },
     {
@@ -1128,6 +1168,26 @@
       "address": "kannur",
       "status": "delivered",
       "createdAt": "2025-10-14T17:09:05.073Z"
+    },
+    {
+      "id": "olme",
+      "userId": "55b1",
+      "items": [
+        {
+          "productId": "1",
+          "name": "Cropped ",
+          "price": 1350,
+          "quantity": 3,
+          "subtotal": 4050,
+          "status": "delivered"
+        }
+      ],
+      "name": "Midhun",
+      "email": "midhun@gmail.com",
+      "total": 4050,
+      "address": "palkkad",
+      "status": "delivered",
+      "createdAt": "2025-10-15T10:22:43.956Z"
     }
   ]
 }

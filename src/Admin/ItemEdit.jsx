@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 
 const ItemEdit = () => {
-  const { id } = useParams(); // 👈 get product ID from URL
+  const { id } = useParams(); 
   const navigate = useNavigate();
   const [product, setProduct] = useState({
     name: "",

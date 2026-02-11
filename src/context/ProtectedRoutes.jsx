@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { CartContext } from "./CartContext";
+import { AuthContext } from "./AuthContext";
 
 export const UserProtectedRoute = () => {
-  const { user } = useContext(CartContext);
+  const { user } = useContext(AuthContext);
 
   if (!user) {
     return <Navigate to="/user" replace />;
@@ -13,10 +13,11 @@ export const UserProtectedRoute = () => {
 };
 
 export const AdminProtectedRoute = () => {
-  const { user } = useContext(CartContext);
+  const { user } = useContext(AuthContext);
+  
 
-  if (!user || user.role !== "admin") {
-    return <Navigate to="/" replace />;
+  if (!user || !user.is_staff) {
+    return <Navigate to="/admin" replace />;
   }
 
   return <Outlet />;

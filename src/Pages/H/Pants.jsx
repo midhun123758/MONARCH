@@ -3,7 +3,7 @@ import { CartContext } from "../../context/CartContext";
 import { WishlistContext } from "../../context/WishContext"; 
 import Footer from "../../Footer/Footer";
 import { toast } from "react-hot-toast";
-
+import axios from "axios";
 import { Navigate,useNavigate } from "react-router-dom";
 export default function Pants() {
   const [pantsList, setPantsList] = useState([]);
@@ -11,17 +11,20 @@ export default function Pants() {
   const { addToCart } = useContext(CartContext);
   window.scrollTo({ top: 0, behavior: "smooth" });
   useEffect(() => {
-    const fetchPants = async () => {
-      try {
-        const res = await fetch("http://localhost:5000/Allproducts");
-        const data = await res.json();
-        setPantsList(data.filter(d=>d.category=="pants"));
-      } catch (err) {
-        console.error("Error fetching pants:", err);
-      }
-    };
-    fetchPants();
+      axios 
+      .get("http://127.0.0.1:8000/api/products/")
+      .then((res) => {
+      const filtered = res.data.filter(
+        (d) => Number(d.category) ==1
+      );
+     setPantsList(filtered)
+    })
+     
+     .catch((err) => console.error("Error fetching dresses:", err));
+    
+     
   }, []);
+console.log('pants',pantsList)
   return (
     <div className="bg-gray-50 min-h-screen p-6">
        
@@ -78,7 +81,7 @@ function HoverImageCard({ pants, addToCart, onQuickView }) {
       <div className="mt-4 flex flex-wrap gap-2">
         <button
           onClick={() => {
-            addToCart(pants);
+            addToCart(pants.id);
             toast.success(`${pants.name} added to cart!`);
           }}
           className="px-3 bg-white py-1 text-black text-sm hover:bg-blue-600/90 font-bold rounded"

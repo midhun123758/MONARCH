@@ -5,95 +5,174 @@ import axios from "axios";
 export default function EditUser() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [status, setStatus] = useState("active");
-  const [role, setRole] = useState("user");
+  const token = localStorage.getItem("token");
 
-  // Fetch user details
+  const [loading, setLoading] = useState(true);
+
+  const [username, setUsername] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [isStaff, setIsStaff] = useState(false);
+  const [isActive, setIsActive] = useState(true);
+  const [isSuperuser, setIsSuperuser] = useState(false);
+
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/users/${id}`)
-      .then((res) => {
-        setUser(res.data);
-        setStatus(res.data.status || "active");
-        setRole(res.data.role || "user");
+      .get(`http://127.0.0.1:8000/api/admin/userView/${id}/`, {
+        headers: { Authorization: `Bearer ${token}` },
       })
-      .catch((err) => console.error("Failed to fetch user:", err))
+      .then((res) => {
+        setUsername(res.data.username);
+        setFirstName(res.data.first_name);
+        setLastName(res.data.last_name);
+        setIsStaff(res.data.is_staff);
+        setIsActive(res.data.is_active);
+        setIsSuperuser(res.data.is_superuser);
+      })
+      .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, [id]);
 
   const handleSave = async () => {
     try {
-      await axios.patch(`http://localhost:5000/users/${id}`, {
-        status,
-        role,
-      });
-      alert("✅ User updated successfully!");
+      await axios.patch(
+        `http://127.0.0.1:8000/api/admin/userEdit/${id}/`,
+        {
+          username,
+          first_name: firstName,
+          last_name: lastName,
+          is_staff: isStaff,
+          is_active: isActive,
+          is_superuser: isSuperuser,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      alert("User updated successfully!");
       navigate("/admin/users");
     } catch (err) {
-      console.error("Failed to update user:", err);
-      alert("❌ Failed to save changes.");
+      console.error(err.response?.data);
+      alert("Failed to update user.");
     }
   };
 
-  if (loading) return <div className="p-6 text-center">Loading user...</div>;
-  if (!user) return <div className="p-6 text-center text-gray-500">User not found.</div>;
+  if (loading) return <div style={{ textAlign: "center" }}>Loading...</div>;
 
   return (
-    <div className="max-w-lg mx-auto bg-white shadow-md rounded-lg p-6 mt-8">
-      <h1 className="text-2xl font-bold mb-4">Edit User</h1>
+    <div style={styles.container}>
+      <div style={styles.card}>
+        <h2 style={styles.title}>Edit User</h2>
 
-      <div className="mb-4">
-        <label className="block font-semibold mb-1">Name</label>
-        <p className="border rounded-md p-2 bg-gray-50">{user.name}</p>
-      </div>
+        <div style={styles.formGroup}>
+          <label>Username</label>
+          <input
+            style={styles.input}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </div>
 
-      <div className="mb-4">
-        <label className="block font-semibold mb-1">Email</label>
-        <p className="border rounded-md p-2 bg-gray-50">{user.email}</p>
-      </div>
+        <div style={styles.formGroup}>
+          <label>First Name</label>
+          <input
+            style={styles.input}
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+          />
+        </div>
 
-      <div className="mb-4">
-        <label className="block font-semibold mb-1">Role</label>
-        <select
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-          className="border rounded-md p-2 w-full"
-        >
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-        </select>
-      </div>
+        <div style={styles.formGroup}>
+          <label>Last Name</label>
+          <input
+            style={styles.input}
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+        </div>
 
-      <div className="mb-4">
-        <label className="block font-semibold mb-1">Status</label>
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          className={`border rounded-md p-2 w-full ${
-            status === "blocked" ? "bg-red-50" : "bg-green-50"
-          }`}
-        >
-          <option value="active">Active</option>
-          <option value="blocked">Blocked</option>
-        </select>
-      </div>
+        <div style={styles.checkboxGroup}>
+          <label>
+            <input
+              type="checkbox"
+              checked={isStaff}
+              onChange={() => setIsStaff(!isStaff)}
+            />
+            Is Staff
+          </label>
 
-      <div className="flex justify-between">
-        <button
-          onClick={() => navigate("/admin/users")}
-          className="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handleSave}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
+          <label>
+            <input
+              type="checkbox"
+              checked={isActive}
+              onChange={() => setIsActive(!isActive)}
+            />
+            Is Active
+          </label>
+
+          <label>
+            <input
+              type="checkbox"
+              checked={isSuperuser}
+              onChange={() => setIsSuperuser(!isSuperuser)}
+            />
+            Is Superuser
+          </label>
+        </div>
+
+        <button style={styles.button} onClick={handleSave}>
           Save Changes
         </button>
       </div>
     </div>
   );
 }
+
+const styles = {
+  container: {
+    minHeight: "100vh",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#f4f6f9",
+  },
+  card: {
+    width: "400px",
+    backgroundColor: "#ffffff",
+    padding: "30px",
+    borderRadius: "10px",
+    boxShadow: "0 5px 20px rgba(0,0,0,0.1)",
+  },
+  title: {
+    marginBottom: "20px",
+    textAlign: "center",
+  },
+  formGroup: {
+    marginBottom: "15px",
+    display: "flex",
+    flexDirection: "column",
+  },
+  input: {
+    padding: "8px 10px",
+    borderRadius: "6px",
+    border: "1px solid #ccc",
+    marginTop: "5px",
+  },
+  checkboxGroup: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "8px",
+    marginBottom: "20px",
+  },
+  button: {
+    width: "100%",
+    padding: "10px",
+    backgroundColor: "#4CAF50",
+    color: "white",
+    border: "none",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontWeight: "bold",
+  },
+};

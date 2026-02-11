@@ -8,7 +8,7 @@ export default function ManageUser() {
   const navigate=useNavigate();
   
   const [users, setUsers] = useState([]);
-
+  const token=localStorage.getItem("token");
   // Fetch users
   useEffect(() => {
     fetchUsers();
@@ -16,7 +16,11 @@ export default function ManageUser() {
 
   const fetchUsers = () => {
     axios
-      .get("http://localhost:5000/users")
+      .get("http://127.0.0.1:8000/api/admin/usermanage/", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((res) => setUsers(res.data))
       .catch((err) => console.error("Failed to fetch users:", err));
   };
@@ -53,17 +57,17 @@ export default function ManageUser() {
           <tbody className="text-gray-700">
             {users.map((user) => (
               <tr key={user.id} className="border-b hover:bg-gray-100">
-                <td className="text-left py-3 px-4">{user.name}</td>
+                <td className="text-left py-3 px-4">{user.username}</td>
   <td className="text-left py-3 px-4">{user.email}</td>
                 <td className="text-left py-3 px-4">
      <span
   className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                      user.role === "admin"
+                      user.is_staff === true
         ? "bg-green-200 text-green-800"
                         : "bg-blue-200 text-blue-800"
                     }`}
                   >
-                    {user.role}
+                    {user.is_staff==true ? "Admin" : "User"}
                   </span>
                 </td>
                 <td className="text-left py-3 px-4">

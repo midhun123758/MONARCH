@@ -4,7 +4,7 @@ import React, { useEffect, useState, useContext, use } from "react";
 import { CartContext } from "../context/CartContext"
 import { WishlistContext } from "../context/WishContext";
 import { useNavigate } from "react-router-dom";
-
+import axios from "axios";
 export default function Tshirts() {
   const [tshirts, setTshirts] = useState([]);
   const [selected, setSelected] = useState(null); // modal
@@ -12,11 +12,13 @@ export default function Tshirts() {
   const { addToCart } = useContext(CartContext);
 window.scrollTo({ top: 0, behavior: "smooth" });
   useEffect(() => {
-    fetch("http://localhost:5000/Allproducts")
-      .then((res) => res.json())
-      .then((data) => setTshirts(data.filter(d=>d.category=="Tshirt")))
-      .catch((err) => console.error("Error fetching T-shirts:", err));
-  }, []);
+    axios .get("http://127.0.0.1:8000/api/products/")
+      .then((res) => {
+      const filtered = res.data.filter(
+        (d) => Number(d.category) === 3
+      );
+     setTshirts(filtered)
+  }, [])});
 
   return (
     <div className="bg-gray-50 min-h-screen p-6">
@@ -73,7 +75,7 @@ function HoverImageCard({ tshirt, onQuickView, addToCart }) {
 
       <div className="mt-4 flex flex-wrap gap-2">
         <button
-          onClick={() => addToCart(tshirt)}
+          onClick={() => addToCart(tshirt.id)}
           className="px-3 bg-white py-1 text-black text-sm hover:bg-blue-600/90 font-bold rounded"
         >
           Add to Cart

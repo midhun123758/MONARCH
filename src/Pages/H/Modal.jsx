@@ -31,6 +31,8 @@ function Modal({ show, onClose }) {
           </h2>
           <p className="text-white/500 mb-6">
             Sign up now to get exclusive deals and updates.
+         <br />
+           <b className="text-[40px] font-bold color-black">Get  offer on your first purchase!</b> 
           </p>
 
           <button

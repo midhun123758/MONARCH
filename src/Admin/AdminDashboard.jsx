@@ -45,7 +45,7 @@ const AdminDashboardV2 = () => {
       try {
         const [usersRes, productsRes, ordersRes] = await Promise.all([
           axios.get("http://localhost:5000/users"),
-          axios.get("http://localhost:5000/Allproducts"),
+          axios.get("http://127.0.0.1:8000/api/products/"),
           axios.get("http://localhost:5000/orders"),
         ]);
 
@@ -148,29 +148,7 @@ const AdminDashboardV2 = () => {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Revenue Status */}
-        <div className="bg-white p-5 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Revenue by Category</h2>
-          <ResponsiveContainer width="100%" height={250}>
-            <PieChart>
-              <Pie
-                data={charts.revenueByCategory}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={80}
-                label
-              >
-                {charts.revenueByCategory.map((entry, idx) => (
-                  <Cell key={idx} fill={PIE_COLORS[idx % PIE_COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip formatter={(value) => `₹${value.toLocaleString()}`} />
-              <Legend />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
+       
         {/* Sales Status */}
         <div className="bg-white p-5 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Sales Status</h2>
@@ -187,22 +165,7 @@ const AdminDashboardV2 = () => {
         </div>
 
         {/* Most Sold Items */}
-        <div className="bg-white p-5 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Top 10 Most Sold Items</h2>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart
-              data={charts.mostSoldItems}
-              layout="vertical"
-              margin={{ top: 5, right: 20, left: 60, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis type="number" />
-              <YAxis dataKey="name" type="category" width={120} />
-              <Tooltip />
-              <Bar dataKey="quantity" fill="#ffc658" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+      
       </div>
     </div>
   );

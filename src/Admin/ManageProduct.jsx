@@ -30,10 +30,9 @@ export default function ManageProduct() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/Allproducts")
+      .get("http://127.0.0.1:8000/api/admin/productView/")
       .then((res) => {
-        // Reverse the array to show newest products first
-        setProducts(res.data.reverse());
+        setProducts(res.data);
       })
       .catch((err) => console.error("Failed to fetch products:", err));
   }, []);
@@ -80,8 +79,6 @@ export default function ManageProduct() {
               </tr>
             </thead>
             <tbody className="text-gray-700">
-             {/* Do not sort in render. Sorting is now handled in useEffect. */}
-
               {products.map((product) => (
                 <tr key={product.id} className="border-b hover:bg-gray-50">
                   <td className="py-3 px-4">
@@ -102,7 +99,7 @@ export default function ManageProduct() {
                   <td className="text-left py-3 px-4">
                     <button
                       className="text-blue-500 hover:text-blue-700 mr-4"
-                      onClick={() => handleEditProduct(product.id)} // ✅ pass id
+                      onClick={() => handleEditProduct(product.id)} 
                     >
                       <Edit size={18} />
                     </button>

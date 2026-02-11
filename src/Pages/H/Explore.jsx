@@ -4,7 +4,7 @@ import { useContext } from "react";
 import { WishlistContext } from "../../context/WishContext"; // make sure you created WishContext.js
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
-
+import axios from "axios"
 export default function DressCollection() {
   const [dresses, setDresses] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -16,11 +16,11 @@ export default function DressCollection() {
 
   const { addToCart } = useContext(CartContext);
   useEffect(() => {
-    fetch("http://localhost:5000/Allproducts")
-      .then((res) => res.json())
-      .then((data) => setDresses(data ))
-   
-      .catch((err) => console.error("Error fetching dresses:", err));
+      axios 
+      .get("http://127.0.0.1:8000/api/products/")
+      .then((res) => setDresses(res.data ))
+      // console.log(dresses)
+      // .catch((err) => console.error("Error fetching dresses:", err));
      
   }, []);
 console.log(dresses);
@@ -76,54 +76,74 @@ console.log(dresses);
     </div>
   );
 }
-
 function HoverImageCard({ dress, addToCart, onQuickView }) {
   const nav = useNavigate();
   const [hovered, setHovered] = useState(false);
-  const { addToWishlist } = useContext(WishlistContext);
-  const {toggleWishlist,wishlist}=useContext(WishlistContext)
-  const inWishlist = Array.isArray(wishlist)
-    ? wishlist.some((item) => item.id === dress.id)
-    : false;
+
+  const { wishlist, addToWishlist } = useContext(WishlistContext);
+
+  // Filter only actual wishlist items with id
+  const validWishlist = Array.isArray(wishlist)
+    ? wishlist.filter((item) => item.id)
+    : [];
+
+  // Check if this dress is in wishlist
+  const inWishlist = validWishlist.some((item) => item.product === dress.id);
+
   const handleAddToCart = () => {
-    addToCart(dress);
+    addToCart(dress.id, 1);
     toast.success(`${dress.name} added to cart!`);
-    console.log(dress);
   };
+
   return (
     <div
       className="relative overflow-hidden shadow-md "
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <h3 className="text-black items-center">{dress.name}<b>"{dress.price}RS"</b></h3>
+      <h3 className="text-black items-center">
+        {dress.name} <b>"{dress.price}RS"</b>
+      </h3>
+
       {/* Image */}
       <div className="group overflow-hidden">
-  <img
-   onClick={() => nav("/product", { state: { product: dress } })}
-    src={hovered ? dress.img2 : dress.img}
-    alt={dress.name}
-    className="w-full h-[70vh] object-cover transition-transform duration-500 group-hover:scale-110"
- 
-  />
-</div>
-
-     
-        <div className="mt-4 flex space-x-4 ">
-          <button className="px-3 bg-white py-1 text-black text-sm hover:bg-blue-600/90 font-bold rounded " onClick={handleAddToCart}>
-            Add to Cart
-          </button>
-
-          <button className="px-3 py-1 bg-white text-black text-sm hover:bg-green-600/90 rounded"
-            onClick={() => nav("/product", { state: { product: dress } })}>
-            checkout
-          </button>
-              <button
-          onClick={(e) => { e.stopPropagation(); toggleWishlist(dress); }}
-          className={`px-3 py-2 rounded text-sm transition-all ${inWishlist ? "bg-pink-500 text-white" : "bg-white"}`}
-          aria-pressed={inWishlist}> {inWishlist ? "♥" : "♡"} </button>
-        </div>
+        <img
+          onClick={() => nav("/product", { state: { product: dress } })}
+          src={hovered ? dress.img2 : dress.img}
+          alt={dress.name}
+          className="w-full h-[70vh] object-cover transition-transform duration-500 group-hover:scale-110"
+        />
       </div>
 
+      <div className="mt-4 flex space-x-4 ">
+        <button
+          className="px-3 bg-white py-1 text-black text-sm hover:bg-blue-600/90 font-bold rounded "
+          onClick={handleAddToCart}
+        >
+          Add to Cart
+        </button>
+
+        <button
+          className="px-3 py-1 bg-white text-black text-sm hover:bg-green-600/90 rounded"
+          onClick={() => nav("/product", { state: { product: dress } })}
+        >
+          checkout
+        </button>
+
+        {/* Wishlist Heart */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            addToWishlist(dress.id);
+          }}
+          className={`px-3 py-2 rounded text-sm transition-all ${
+            inWishlist ? "bg-pink-500 text-white" : "bg-white"
+          }`}
+          aria-pressed={inWishlist}
+        >
+          {inWishlist ? "♥" : "♡"}
+        </button>
+      </div>
+    </div>
   );
 }

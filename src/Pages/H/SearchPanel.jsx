@@ -60,7 +60,7 @@ export default function SearchPanel({ onClose }) {
         <select
           value={sortOption}
           onChange={(e) => setSortOption(e.target.value)}
-          className="border px-4 py-2 rounded mb-4 w-full text-black"
+          className="border px-4 py-2  mb-4 w-[200px] text-black"
         >
           <option value="defult"> Sort by</option>
    <option value="asc">Price: Low to High</option>
@@ -81,7 +81,7 @@ export default function SearchPanel({ onClose }) {
         </div>
 
         {/* Product List */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className=" grid grid-cols-2 sm:grid-cols-2 gap-4">
           {filteredProducts.length > 0 ? (
             filteredProducts.map((p) => (
               <div
