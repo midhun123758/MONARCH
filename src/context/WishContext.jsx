@@ -1,75 +1,77 @@
-import axios from "axios";
-import React, { createContext, useEffect, useState, useCallback } from "react";
+// src/context/WishlistContext.js
+import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { wishlist as wishlistAPI } from "../api/api";
+import { AuthContext } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export const WishlistContext = createContext();
 
 export const WishlistProvider = ({ children }) => {
+  const { user, token } = useContext(AuthContext); // AuthContext should provide token & user
   const navigate = useNavigate();
   const [wishlist, setWishlist] = useState([]);
-console.log("helloo",wishlist)
-  const getHeaders = () => {
-    const token = localStorage.getItem("token");
-    return token ? { Authorization: `Bearer ${token}` } : null;
-  };
 
+  // ---------------- FETCH WISHLIST ----------------
   const fetchWishlist = useCallback(async () => {
-    const headers = getHeaders();
-    if (!headers) return;
+    if (!token) return;
 
     try {
-      const res = await axios.get("http://127.0.0.1:8000/api/wishlist/wishlist_View/", { headers });
-      setWishlist(res.data.wishlist_items);
+      const res = await wishlistAPI.getWishlist(token);
+      setWishlist(res.data.wishlist_items || []);
     } catch (err) {
-      console.error("Fetch error:", err.response?.data);
+      console.error("Fetch wishlist error:", err.response?.data || err.message);
     }
-  }, []);
+  }, [token]);
 
   useEffect(() => {
-    fetchWishlist();
-  }, [fetchWishlist]);
+    if (user) fetchWishlist();
+    else setWishlist([]);
+  }, [user, fetchWishlist]);
 
- // WishlistContext.js
-const addToWishlist = async (productId) => {
-  const headers = getHeaders();
-  if (!headers) return navigate("/login");
+  // ---------------- TOGGLE ITEM ----------------
+  const addToWishlist = async (productId) => {
+    if (!token) return navigate("/login");
 
-  try {
-    const res = await axios.post(
-      "http://127.0.0.1:8000/api/wishlist/wishlist_add/",
-      { product_id: productId },
-      { headers }
-    );
-
-    setWishlist((prev) => {
-      // Check if this product is already in our React state
-      const isAlreadyInWishlist = prev.some(item => item.product === productId);
-
-      if (isAlreadyInWishlist) {
-        // If it exists, remove it from the list
-        return prev.filter(item => item.product !== productId);
-      } else {
-        // If it doesn't exist, add the new item sent by Django
-        return [...prev, res.data];
-      }
-    });
-  } catch (err) {
-    console.error("Wishlist sync error:", err);
-  }
-};
-
-  const removeFromWishlist = async (itemId) => {
-    const headers = getHeaders();
     try {
-      await axios.delete(`http://127.0.0.1:8000/api/wishlist/delete/${itemId}/`, { headers });
-      setWishlist((prev) => prev.filter((item) => item.id !== itemId));
+      const res = await wishlistAPI.addToWishlist(productId, token);
+
+      setWishlist((prev) => {
+        const exists = prev.some((item) => item.product === productId);
+        if (exists) {
+          return prev.filter((item) => item.product !== productId);
+        }
+        return [...prev, res.data];
+      });
+
+      toast.success(res.data.id ? "Added to wishlist!" : "Removed from wishlist!");
     } catch (err) {
-      console.error("Delete error:", err.response?.data);
+      console.error("Toggle wishlist error:", err.response?.data || err.message);
+    }
+  };
+
+  // ---------------- REMOVE ITEM ----------------
+  const removeFromWishlist = async (itemId) => {
+    if (!token) return;
+
+    try {
+      await wishlistAPI.removeItem(itemId, token);
+      setWishlist((prev) => prev.filter((item) => item.id !== itemId));
+      toast.success("Item removed from wishlist!");
+    } catch (err) {
+      console.error("Remove wishlist error:", err.response?.data || err.message);
     }
   };
 
   return (
-    <WishlistContext.Provider value={{ wishlist, addToWishlist, removeFromWishlist }}>
+    <WishlistContext.Provider
+      value={{
+        wishlist,
+        fetchWishlist,
+        addToWishlist,
+        removeFromWishlist,
+      }}
+    >
       {children}
     </WishlistContext.Provider>
   );

@@ -17,7 +17,7 @@ export default function DressCollection() {
       .get("http://127.0.0.1:8000/api/products/")
       .then((res) => {
       const filtered = res.data.filter(
-        (d) => Number(d.category) === 2
+        (d) => Number(d.category) === 1
       );
      setDresses(filtered)
     })
@@ -72,7 +72,7 @@ const inWishlist = Array.isArray(wishlist)
       <div className="group overflow-hidden">
   <img
    onClick={() => nav("/product", { state: { product: dress } })}
-    src={hovered ? dress.img2 : dress.img}
+    src={hovered ? dress.img2 : dress.img1}
     alt={dress.name}
     className="w-full h-[50vh] sm:h-[70vh] object-cover transition-transform duration-500 group-hover:scale-110"
     

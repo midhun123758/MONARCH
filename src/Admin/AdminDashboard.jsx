@@ -9,13 +9,9 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
 } from "recharts";
 import { Users, Package, DollarSign, ShoppingCart } from "lucide-react";
 
-// Reusable Stat Card
 const StatCard = ({ title, value, icon, color }) => (
   <div className="bg-white p-5 rounded-lg shadow-md flex items-center">
     <div className={`p-3 rounded-full mr-4 ${color}`}>{icon}</div>
@@ -34,32 +30,38 @@ const AdminDashboardV2 = () => {
     totalSales: 0,
   });
 
-  const [charts, setCharts] = useState({
-    revenueByCategory: [],
-    salesStatus: [],
-    mostSoldItems: [],
-  });
+  const [salesStatus, setSalesStatus] = useState([]);
 
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
         const [usersRes, productsRes, ordersRes] = await Promise.all([
-          axios.get("http://localhost:5000/users"),
-          axios.get("http://127.0.0.1:8000/api/products/"),
-          axios.get("http://localhost:5000/orders"),
+          axios.get("http://127.0.0.1:8000/api/admin/usermanage/"),
+          axios.get("http://127.0.0.1:8000/api/admin/productView/"),
+          axios.get("http://127.0.0.1:8000/api/admin/orders/users/"),
         ]);
 
         const users = usersRes.data;
         const products = productsRes.data;
         const orders = ordersRes.data;
 
-        const deliveredOrders = orders.filter(o => o.status === "delivered");
+        // SUCCESS orders only
+        const successOrders = orders.filter(
+          (o) => o.payment_status === "SUCCESS"
+        );
 
-        // Stats
-        const totalRevenue = deliveredOrders.reduce(
-          (sum, order) => sum + order.total,
+        // Total Revenue
+        const totalRevenue = successOrders.reduce(
+          (sum, order) => sum + parseFloat(order.total_amount),
           0
         );
+
+        // Order Status Count
+        const statusCount = orders.reduce((acc, order) => {
+          acc[order.payment_status] =
+            (acc[order.payment_status] || 0) + 1;
+          return acc;
+        }, {});
 
         setStats({
           totalUsers: users.length,
@@ -68,54 +70,25 @@ const AdminDashboardV2 = () => {
           totalSales: orders.length,
         });
 
-        // Map for products
-        const productMap = new Map(products.map(p => [p.id, p]));
-
-        // Revenue by Category
-        const categoryRevenue = {};
-        const productQuantity = {};
-
-        deliveredOrders.forEach(order => {
-          order.items.forEach(item => {
-            const product = productMap.get(item.id);
-            if (product) {
-              const revenue = item.price * item.qty;
-              categoryRevenue[product.category] =
-                (categoryRevenue[product.category] || 0) + revenue;
-
-              productQuantity[product.name] =
-                (productQuantity[product.name] || 0) + item.qty;
-            }
-          });
-        });
-
-        // Order Status
-        const orderStatus = orders.reduce((acc, order) => {
-          acc[order.status] = (acc[order.status] || 0) + 1;
-          return acc;
-        }, {});
-
-        setCharts({
-          revenueByCategory: Object.entries(categoryRevenue).map(([name, value]) => ({ name, value })),
-          salesStatus: Object.entries(orderStatus).map(([name, value]) => ({ name, value })),
-          mostSoldItems: Object.entries(productQuantity)
-            .map(([name, quantity]) => ({ name, quantity }))
-            .sort((a, b) => b.quantity - a.quantity)
-            .slice(0, 10),
-        });
-      } catch (err) {
-        console.error(err);
+        setSalesStatus(
+          Object.entries(statusCount).map(([name, value]) => ({
+            name,
+            value,
+          }))
+        );
+      } catch (error) {
+        console.error("Dashboard error:", error);
       }
     };
 
     fetchDashboard();
   }, []);
 
-  const PIE_COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
-
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Admin Dashboard V2</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">
+        Admin Dashboard
+      </h1>
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -145,27 +118,22 @@ const AdminDashboardV2 = () => {
         />
       </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Revenue Status */}
-       
-        {/* Sales Status */}
-        <div className="bg-white p-5 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Sales Status</h2>
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={charts.salesStatus} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="value" fill="#82ca9d" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+      {/* Sales Status Chart */}
+      <div className="bg-white p-5 rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold mb-4">
+          Order Payment Status
+        </h2>
 
-        {/* Most Sold Items */}
-      
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={salesStatus}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="value" fill="#82ca9d" />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

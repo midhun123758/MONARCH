@@ -26,8 +26,8 @@ console.log('this is data',wishlist)
           {wishlist.map((item) => (
             <div key={item.id} className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 flex flex-col">
               <img 
-                src={item.product.img} 
-                alt={item.product.name} 
+                src={item.product_image} 
+                alt={item.product_name} 
                 className="w-full h-56 object-cover"
               />
               <div className="p-4 flex-1 flex flex-col justify-between">
@@ -38,7 +38,7 @@ console.log('this is data',wishlist)
                 
                 <div className="mt-5 flex flex-col gap-2">
                   <button 
-                    onClick={() => addToCart(item.product.id, 1)}
+                    onClick={() => addToCart(item.product, 1)}
                     className="w-full bg-black text-white py-2.5 rounded-lg hover:bg-gray-800 transition font-medium"
                   >
                     Add to Cart

@@ -5,53 +5,50 @@ import { useNavigate } from "react-router-dom";
 
 export default function ManageProduct() {
   const [products, setProducts] = useState([]);
-  const  [add , setAdd] = useState([]);
   const navigate = useNavigate();
 
   const handleAddProduct = () => {
     navigate("/admin/products/add");
   };
 
- 
-  const   handleEditProduct  = (id) => {
+  const handleEditProduct = (id) => {
     navigate(`/admin/products/edit/${id}`);
   };
 
+  // Soft delete / restore product
+  const handleToggleDelete = async (product) => {
+    try {
+      const response = await axios.patch(
+        `http://127.0.0.1:8000/api/admin/productsDelete/${product.id}/`,
+        { is_deleted: !product.is_deleted } // toggle
+      );
 
+      setProducts((prev) =>
+        prev.map((p) =>
+          p.id === product.id ? { ...p, is_deleted: !p.is_deleted } : p
+        )
+      );
 
-const handleDelete = async (id) => {
-  try {
-    const response = await axios.patch(
-      `http://127.0.0.1:8000/api/admin/productsDelete/${id}/`
-    );
+      alert(
+        product.is_deleted
+          ? "Product restored successfully!"
+          : "Product soft deleted successfully!"
+      );
+    } catch (error) {
+      console.error("Failed to update product:", error.response?.data || error);
+      alert("Error updating product!");
+    }
+  };
 
-    setProducts((prevProducts) =>
-      prevProducts.filter((product) => product.is_deleted== true)
-    );
-
-    alert(response.data.message || "Product deleted successfully!");
-  } catch (error) {
-    console.error("Failed to delete product:", error.response?.data || error);
-    alert("Error deleting product!");
-  }
-};
-
-
-console.log('product',products)
   useEffect(() => {
     axios
       .get("http://127.0.0.1:8000/api/admin/productView/")
       .then((res) => {
-      // const filteredProducts = res.data.filter(
-      //   (product) => product.is_deleted === trufalse
-      // );
-      // setProducts(filteredProducts);
-      setProducts(res.data)
-    })
+        setProducts(res.data);
+      })
       .catch((err) => console.error("Failed to fetch products:", err));
   }, []);
- 
- console.log(products)
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-6">
@@ -85,19 +82,27 @@ console.log('product',products)
                   Price
                 </th>
                 <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
-                  Actions
+                  Stock
                 </th>
                 <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
-                  Stock
-               </th>
+                  Deleted
+                </th>
+                <th className="text-left py-3 px-4 uppercase font-semibold text-sm">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="text-gray-700">
               {products.map((product) => (
-                <tr key={product.id} className="border-b hover:bg-gray-50">
+                <tr
+                  key={product.id}
+                  className={`border-b ${
+                    product.is_deleted ? "bg-red-50" : "hover:bg-gray-50"
+                  }`}
+                >
                   <td className="py-3 px-4">
                     <img
-                      src={product.img}
+                      src={product.img1 || "/placeholder.png"}
                       alt={product.name}
                       className="h-12 w-12 object-cover rounded"
                     />
@@ -105,23 +110,24 @@ console.log('product',products)
                   <td className="text-left py-3 px-4 font-medium">
                     {product.name}
                   </td>
-                  <td className="text-left py-3 px-4">
-                    {product.category || "—"}
+                  <td className="text-left py-3 px-4 font-medium">
+                    {product.category_name || product.category} {/* If backend sends name */}
                   </td>
                   <td className="text-left py-3 px-4">₹{product.price}</td>
                   <td className="text-left py-3 px-4">{product.stock}</td>
                   <td className="text-left py-3 px-4">
+                    <input
+                      type="checkbox"
+                      checked={product.is_deleted}
+                      onChange={() => handleToggleDelete(product)}
+                    />
+                  </td>
+                  <td className="text-left py-3 px-4">
                     <button
                       className="text-blue-500 hover:text-blue-700 mr-4"
-                      onClick={() => handleEditProduct(product.id)} 
+                      onClick={() => handleEditProduct(product.id)}
                     >
                       <Edit size={18} />
-                    </button>
-                    <button
-                      className="text-red-500 hover:text-red-700"
-                      onClick={() => handleDelete(product.id)}
->
-                      <Trash2 size={18} />
                     </button>
                   </td>
                 </tr>

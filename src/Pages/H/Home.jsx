@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 // import { CartContext } from '../../context/CartContext';
-
+import axios from 'axios';
 const quotes = [
  "MONARCH isn't just fashion — it's the art of ruling your style.",
 "Every thread tells a story of elegance and confidence.",
@@ -16,7 +16,7 @@ export default function Home() {
 
   const { user } = useContext(AuthContext);
   const [showModal, setShowModal] = useState(false);
-  const [time,setTime]=useState(1000)
+  const [time,setTime]=useState(500);
   const images = [
    "/assets/added.webp",
     "/assets/2.jpg",
@@ -53,11 +53,17 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [images.length]);
 
-  useEffect(() => {
-    fetch("http://localhost:5000/Allproducts")
-      .then((res) => res.json())
-      .then((data) => setItems(data))
-      .catch((err) => console.error("Error fetching products:", err));
+   useEffect(() => {
+      axios 
+      .get("http://127.0.0.1:8000/api/products/")
+      .then((res) => {
+  
+        setItems(res.data)
+    })
+     
+     .catch((err) => console.error("Error fetching dresses:", err));
+    
+     
   }, []);
   
   const navigate = useNavigate();
@@ -208,7 +214,7 @@ export default function Home() {
                     <div className="relative mb-3 overflow-hidden rounded-lg shadow-lg">
                       <img
                         onClick={() => navigate("/product", { state: { product: item } })}
-                        src={item.img}
+                        src={item.img1}
                         alt={item.name}
                         className="w-full h-[75vh] object-cover cursor-pointer"
                       />
@@ -287,8 +293,8 @@ export default function Home() {
                         >
                           <div className="relative mb-4 overflow-hidden rounded-lg">
                             <img
-                              onClick={() => navigate("/product", { state: { product: item } })}
-                              src={hoveredItem === item.id ? item.img2 : item.img}
+                             onClick={() => navigate("/product", { state: { product: item } })}
+                              src={hoveredItem === item.id ? item.img2 : item.img1}
                               alt={item.name}
                               className="w-full h-96 object-cover group-hover:scale-110 transition-transform duration-500 cursor-pointer"
                             />

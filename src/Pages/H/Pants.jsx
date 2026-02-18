@@ -15,7 +15,7 @@ export default function Pants() {
       .get("http://127.0.0.1:8000/api/products/")
       .then((res) => {
       const filtered = res.data.filter(
-        (d) => Number(d.category) ==1
+        (d) => Number(d.category) ==2
       );
      setPantsList(filtered)
     })
@@ -72,7 +72,7 @@ function HoverImageCard({ pants, addToCart, onQuickView }) {
       <div className="group overflow-hidden">
   <img
    onClick={() => nav("/product", { state: { product: pants } })}
-    src={hovered ? pants.img2 : pants.img}
+    src={hovered ? pants.img2 : pants.img1}
     alt={pants.name}
     className="w-full h-[50vh] sm:h-[70vh] object-cover transition-transform duration-500 group-hover:scale-110"
   />

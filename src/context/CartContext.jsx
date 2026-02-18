@@ -1,29 +1,22 @@
+// src/context/CartContext.js
 import React, { createContext, useContext, useEffect, useState } from "react";
-import axios from "axios";
+import { toast } from "react-toastify";
 import { AuthContext } from "./AuthContext";
+import { cart as cartAPI } from "../api/api";
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const { user } = useContext(AuthContext);
+  const { user, token } = useContext(AuthContext); // use token from AuthContext
   const [cart, setCart] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  const token = localStorage.getItem("token");
 
-  // 🔹 Load cart
+  // ---------------- LOAD CART ----------------
   const loadCart = async () => {
     if (!token) return;
 
     try {
-      const res = await axios.get(
-        "http://127.0.0.1:8000/api/cart/view/",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
+      const res = await cartAPI.getCart(token);
       setCart(res.data.cart_items);
       setTotalPrice(res.data.total_price);
     } catch (err) {
@@ -31,79 +24,62 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  // Automatically reload cart when user logs in/out
   useEffect(() => {
-    if (user) {
+    if (user && token) {
       loadCart();
     } else {
       setCart([]);
       setTotalPrice(0);
     }
-  }, [user]);
+  }, [user, token]);
 
-  // 🔹 ADD TO CART
+  // ---------------- ADD ITEM ----------------
   const addToCart = async (productId, quantity = 1) => {
+    if (!token) return;
+
     try {
-      await axios.post(
-        "http://127.0.0.1:8000/api/cart/add/",
-        { product_id: productId, quantity },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await cartAPI.addItem(productId, quantity, token);
+      toast.success("Item added to cart!");
       loadCart();
     } catch (err) {
       console.error("Add to cart error:", err.response?.data || err.message);
     }
   };
 
-  // 🔹 UPDATE QUANTITY (CORE FIX)
-  const updateQuantity = async (itemId, newQuantity) => {
+  // ---------------- UPDATE ITEM ----------------
+  const updateQuantity = async (itemId, quantity) => {
+    if (!token) return;
+
     try {
-      await axios.put(
-        `http://127.0.0.1:8000/api/cart/update/${itemId}/`,
-        { quantity: newQuantity },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await cartAPI.updateItem(itemId, quantity, token);
       loadCart();
     } catch (err) {
       console.error("Update cart error:", err.response?.data || err.message);
     }
   };
 
-  // 🔹 REMOVE ITEM
+  // ---------------- REMOVE ITEM ----------------
   const removeFromCart = async (itemId) => {
+    if (!token) return;
+
     try {
-      await axios.delete(
-        `http://127.0.0.1:8000/api/cart/delete/${itemId}/`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await cartAPI.removeItem(itemId, token);
+      toast.success("Item removed from cart!");
       loadCart();
     } catch (err) {
+      toast.error("Failed to remove item from cart.");
       console.error("Remove cart error:", err.response?.data || err.message);
     }
   };
 
-  // 🔹 INCREMENT / DECREMENT (ONLY CALCULATE HERE)
+  // ---------------- INCREMENT / DECREMENT ----------------
   const incrementQuantity = (itemId, currentQty, stock) => {
-    if (currentQty < stock) {
-      updateQuantity(itemId, currentQty + 1);
-    }
+    if (currentQty < stock) updateQuantity(itemId, currentQty + 1);
   };
 
   const decrementQuantity = (itemId, currentQty) => {
-    if (currentQty > 1) {
-      updateQuantity(itemId, currentQty - 1);
-    }
+    if (currentQty > 1) updateQuantity(itemId, currentQty - 1);
   };
 
   return (
@@ -114,8 +90,10 @@ export const CartProvider = ({ children }) => {
         cartCount: cart.reduce((sum, item) => sum + item.quantity, 0),
         addToCart,
         removeFromCart,
+        updateQuantity,
         incrementQuantity,
         decrementQuantity,
+        loadCart, // expose loadCart if needed
       }}
     >
       {children}

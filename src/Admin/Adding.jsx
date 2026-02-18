@@ -9,7 +9,7 @@ export default function Adding() {
     name: "",
     category: "",
     price: "",
-    img: "",
+    img1: "",
     img2: "",
     img3: "",
     img4: "",
@@ -28,7 +28,8 @@ export default function Adding() {
     setLoading(true);
     try {
       // Send product to backend
-      await axios.post("http://localhost:5000/Allproducts", {
+      await axios.post("http://127.0.0.1:8000/api/admin/productsadd/",
+         {
         
         ...product,
         price: Number(product.price),
@@ -88,8 +89,8 @@ export default function Adding() {
           <label className="block font-medium mb-1">Image URL</label>
           <input
             type="text"
-            name="img"
-            value={product.img}
+            name="img1"
+            value={product.img1}
             onChange={handleChange}
             className="w-full border p-2 rounded"
             required

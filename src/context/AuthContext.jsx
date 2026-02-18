@@ -1,9 +1,8 @@
 // src/context/AuthContext.js
-import React, { createContext, useEffect, useState } from "react";
-import axios from "axios";
+import React, { createContext, useState, useEffect } from "react";
+import { auth } from "../api/api";
 
 export const AuthContext = createContext();
-const API = "http://127.0.0.1:8000/api/users";
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -12,11 +11,7 @@ export const AuthProvider = ({ children }) => {
   // ---------------- LOAD USER ----------------
   useEffect(() => {
     if (!token) return;
-
-    axios
-      .get(`${API}/auth/me/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+    auth.me(token)
       .then((res) => setUser(res.data))
       .catch(() => {
         localStorage.clear();
@@ -27,65 +22,43 @@ export const AuthProvider = ({ children }) => {
 
   // ---------------- REGISTER ----------------
   const register = async (username, email, password) => {
-    await axios.post(`${API}/register/`, {
-      username,
-      email,
-      password,
-    });
+    await auth.register(username, email, password);
   };
 
   // ---------------- LOGIN ----------------
   const login = async (email, password) => {
-    const { data } = await axios.post(`${API}/login/`, {
-       email, // backend expects "username"
-      password,
-    });
-
+    const { data } = await auth.login(email, password);
     localStorage.setItem("token", data.access);
     localStorage.setItem("refresh", data.refresh);
     setToken(data.access);
-    setUser(data.user);
-    return data;
-  };
-
-  // ---------------- FORGOT PASSWORD ----------------
-  const sendOtp = async (email) => {
-    await axios.post(`${API}/forgot-password/`, { email });
-  };
-
-  const verifyOtp = async (email, otp) => {
-    await axios.post(`${API}/verify-otp/`, { email, otp });
-  };
-
-  const resetPassword = async (email, password) => {
-    await axios.post(`${API}/reset-password/`, {
-      email,
-      password,
+    setUser({
+      username: data.username,
+      email: data.email,
+      is_staff: data.is_staff,
     });
+    return data;
   };
 
   // ---------------- LOGOUT ----------------
   const logout = async () => {
     try {
-      const refresh = localStorage.getItem("refresh");
-      if (refresh) {
-        await axios.post(
-          `${API}/logout/`,
-          { refresh },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-      }
+      if (token) await auth.logout(token);
     } catch {}
-
     localStorage.clear();
     setUser(null);
     setToken(null);
   };
 
+  // ---------------- PASSWORD ----------------
+  const sendOtp = (email) => auth.sendOtp(email);
+  const verifyOtp = (email, otp) => auth.verifyOtp(email, otp);
+  const resetPassword = (email, password) => auth.resetPassword(email, password);
+
   return (
     <AuthContext.Provider
       value={{
         user,
+        token,
         login,
         register,
         logout,

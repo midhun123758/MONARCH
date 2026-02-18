@@ -8,7 +8,6 @@ import { AuthProvider } from "./context/AuthContext.jsx";
 // Shared components
 import Nav from "./Navbar/Nav";
 import Footer from "./Footer/Footer";
-
 // User-facing pages
 import Home from "./Pages/H/Home";
 import Contact from "./Navbar/Contact";
@@ -40,8 +39,8 @@ import Adding from "./Admin/Adding";
 import ItemEdit from "./Admin/ItemEdit";
 import Edituser from "./Admin/Edituser";
 import { AdminProtectedRoute, UserProtectedRoute } from "./context/ProtectedRoutes";
-
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const UserLayout = () => (
   <>
     <Nav />
@@ -53,10 +52,22 @@ const UserLayout = () => (
 );
 function App() {
   return (
+
+    
     <BrowserRouter>
     <AuthProvider>
       <CartProvider>
         <WishlistProvider>
+           <ToastContainer
+              position="top-right"
+              autoClose={3000}
+              hideProgressBar={false}
+              closeOnClick
+              pauseOnHover
+              draggable
+              theme="colored"
+            />
+
           <Routes>
 
             {/* USER ROUTES */}

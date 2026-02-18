@@ -9,7 +9,7 @@ const ItemEdit = () => {
     name: "",
     category: "",
     price: "",
-    img: "",
+    img1: "",
     img2: "",
     description: "",
     img3: "",
@@ -64,9 +64,9 @@ const ItemEdit = () => {
         />
         <input
           type="text"
-          name="img"
+          name="img1"
           placeholder="Image URL"
-          value={product.img}
+          value={product.img1}
           onChange={handleChange}
           className="border p-2 w-full rounded"
         />
@@ -112,6 +112,18 @@ const ItemEdit = () => {
     className="border rounded px-3 py-2 w-full"
   />
 </div>
+<div>
+  <label className="block text-gray-700 font-semibold mb-2">Is Deleted</label>
+  <input
+    type="text"
+    name="is_deleted"
+    value={product.is_deleted ? "True" : "False"}
+    readOnly
+    disabled
+    className="border rounded px-3 py-2 w-full bg-gray-100 cursor-not-allowed"
+  />
+</div>
+
 
         <button
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"

@@ -15,14 +15,17 @@ export default function DressCollection() {
   const currentDresses = dresses.slice(startIndex, startIndex + itemsPerPage);
 
   const { addToCart } = useContext(CartContext);
-  useEffect(() => {
-      axios 
-      .get("http://127.0.0.1:8000/api/products/")
-      .then((res) => setDresses(res.data ))
-      // console.log(dresses)
-      // .catch((err) => console.error("Error fetching dresses:", err));
-     
-  }, []);
+useEffect(() => {
+  axios
+    .get("http://127.0.0.1:8000/api/products/")
+    .then((res) => {
+      const filteredDresses = res.data.filter(
+        (item) => item.is_deleted === false
+      );
+      setDresses(filteredDresses);
+    })
+    .catch((err) => console.error("Error fetching dresses:", err));
+}, []);
 console.log(dresses);
   return (
     <div>
@@ -109,7 +112,7 @@ function HoverImageCard({ dress, addToCart, onQuickView }) {
       <div className="group overflow-hidden">
         <img
           onClick={() => nav("/product", { state: { product: dress } })}
-          src={hovered ? dress.img2 : dress.img}
+          src={hovered ? dress.img2 : dress.img1}
           alt={dress.name}
           className="w-full h-[70vh] object-cover transition-transform duration-500 group-hover:scale-110"
         />

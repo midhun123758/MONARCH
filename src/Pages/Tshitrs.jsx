@@ -66,7 +66,7 @@ function HoverImageCard({ tshirt, onQuickView, addToCart }) {
     <div className="group overflow-hidden">
   <img
    onClick={() => nav("/product", { state: { product: tshirt } })}
-    src={hovered ? tshirt.img2 : tshirt.img}
+    src={hovered ? tshirt.img2 : tshirt.img1}
     alt={tshirt.name}
     className="w-full h-[50vh] sm:h-[70vh] object-cover transition-transform duration-500 group-hover:scale-110"
    
