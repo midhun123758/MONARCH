@@ -36,9 +36,9 @@ const AdminDashboardV2 = () => {
     const fetchDashboard = async () => {
       try {
         const [usersRes, productsRes, ordersRes] = await Promise.all([
-          axios.get("http://127.0.0.1:8000/api/admin/usermanage/"),
-          axios.get("http://127.0.0.1:8000/api/admin/productView/"),
-          axios.get("http://127.0.0.1:8000/api/admin/orders/users/"),
+          axios.get("http://13.126.102.18:8000/api/admin/usermanage/"),
+          axios.get("http://13.126.102.18:8000/api/admin/productView/"),
+          axios.get("http://13.126.102.18:8000/api/admin/orders/users/"),
         ]);
 
         const users = usersRes.data;

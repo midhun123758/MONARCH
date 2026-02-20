@@ -13,7 +13,7 @@ export default function ViewOrders() {
   const fetchOrders = async () => {
     try {
       const res = await axios.get(
-        "http://127.0.0.1:8000/api/admin/orders/users/"
+        "http://13.126.102.18:8000/api/admin/orders/users/"
       );
       setOrders(res.data);
     } catch (err) {
@@ -27,7 +27,7 @@ export default function ViewOrders() {
   const updateStatus = async (orderId, newStatus) => {
     try {
       await axios.patch(
-        `http://127.0.0.1:8000/api/admin/orders/update/${orderId}/`,
+        `http://13.126.102.18:8000/api/admin/orders/update/${orderId}/`,
         {
           payment_status: newStatus,
         }

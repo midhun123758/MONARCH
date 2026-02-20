@@ -25,7 +25,7 @@ export default function OrderHistory() {
         const token = localStorage.getItem("token");
 
         const response = await axios.get(
-          "http://127.0.0.1:8000/api/orders/order-history/",
+          "http://13.126.102.18:8000/api/orders/order-history/",
           {
             headers: {
               Authorization: `Bearer ${token}`,

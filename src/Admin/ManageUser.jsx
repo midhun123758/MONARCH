@@ -16,7 +16,7 @@ export default function ManageUser() {
 
   const fetchUsers = () => {
     axios
-      .get("http://127.0.0.1:8000/api/admin/usermanage/", {
+      .get("http://13.126.102.18:8000/api/admin/usermanage/", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

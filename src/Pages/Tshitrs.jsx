@@ -12,7 +12,7 @@ export default function Tshirts() {
   const { addToCart } = useContext(CartContext);
 window.scrollTo({ top: 0, behavior: "smooth" });
   useEffect(() => {
-    axios .get("http://127.0.0.1:8000/api/products/")
+    axios .get("http://13.126.102.18:8000/api/products/")
       .then((res) => {
       const filtered = res.data.filter(
         (d) => Number(d.category) === 3

@@ -17,7 +17,7 @@ export default function DressCollection() {
   const { addToCart } = useContext(CartContext);
 useEffect(() => {
   axios
-    .get("http://127.0.0.1:8000/api/products/")
+    .get("http://13.126.102.18:8000/api/products/")
     .then((res) => {
       const filteredDresses = res.data.filter(
         (item) => item.is_deleted === false
